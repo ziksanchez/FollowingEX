@@ -9,7 +9,7 @@ if FollowingPkmn::CAN_TALK_WITH_POKEMON
   EventHandlers.add(:following_pkmn_talk, :music_generic, proc { |pkmn, random_val|
     if random_val == 0
       FollowingPkmn.animation(FollowingPkmn::ANIMATION_EMOTE_MUSIC)
-      pbMoveRoute($game_player, [PBMoveRoute::WAIT, 20], true)
+      pbMoveRoute($game_player, [PBMoveRoute::WAIT, 20])
       messages = [
         _INTL("{1} parece querer jugar con {2}."),
         _INTL("{1} está cantando y tarareando."),
@@ -44,7 +44,7 @@ if FollowingPkmn::CAN_TALK_WITH_POKEMON
       case value
       # Special move route to go along with some of the dialogue
       when 3, 9
-        pbMoveRoute($game_player, [PBMoveRoute::WAIT, 80], true)
+        pbMoveRoute($game_player, [PBMoveRoute::WAIT, 80])
         FollowingPkmn.move_route([
           PBMoveRoute::TURN_RIGHT,
           PBMoveRoute::WAIT, 4,
@@ -63,7 +63,7 @@ if FollowingPkmn::CAN_TALK_WITH_POKEMON
           PBMoveRoute::JUMP, 0, 0
         ])
       when 4, 5
-        pbMoveRoute($game_player, [PBMoveRoute::WAIT, 40], true)
+        pbMoveRoute($game_player, [PBMoveRoute::WAIT, 40])
         FollowingPkmn.move_route([
           PBMoveRoute::JUMP, 0, 0,
           PBMoveRoute::WAIT, 10,
@@ -72,7 +72,7 @@ if FollowingPkmn::CAN_TALK_WITH_POKEMON
           PBMoveRoute::JUMP, 0, 0
         ])
       when 6, 17
-        pbMoveRoute($game_player, [PBMoveRoute::WAIT, 40], true)
+        pbMoveRoute($game_player, [PBMoveRoute::WAIT, 40])
         FollowingPkmn.move_route([
           PBMoveRoute::TURN_RIGHT,
           PBMoveRoute::WAIT, 4,
@@ -83,7 +83,7 @@ if FollowingPkmn::CAN_TALK_WITH_POKEMON
           PBMoveRoute::TURN_UP
         ])
       when 7, 28
-        pbMoveRoute($game_player, [PBMoveRoute::WAIT, 60], true)
+        pbMoveRoute($game_player, [PBMoveRoute::WAIT, 60])
         FollowingPkmn.move_route([
           PBMoveRoute::TURN_RIGHT,
           PBMoveRoute::WAIT, 4,
@@ -106,7 +106,7 @@ if FollowingPkmn::CAN_TALK_WITH_POKEMON
           PBMoveRoute::JUMP, 0, 0
         ])
       when 21, 22
-        pbMoveRoute($game_player, [PBMoveRoute::WAIT, 50], true)
+        pbMoveRoute($game_player, [PBMoveRoute::WAIT, 50])
         FollowingPkmn.move_route([
           PBMoveRoute::TURN_RIGHT,
           PBMoveRoute::WAIT, 4,
@@ -131,7 +131,7 @@ if FollowingPkmn::CAN_TALK_WITH_POKEMON
   EventHandlers.add(:following_pkmn_talk, :angry_generic, proc { |pkmn, random_val|
     if random_val == 1
       FollowingPkmn.animation(FollowingPkmn::ANIMATION_EMOTE_ANGRY)
-      pbMoveRoute($game_player, [PBMoveRoute::WAIT, 20], true)
+      pbMoveRoute($game_player, [PBMoveRoute::WAIT, 20])
       messages = [
         _INTL("¡{1} dejó escapar un rugido!"),
         _INTL("¡{1} está poniendo cara de enfado!"),
@@ -148,7 +148,7 @@ if FollowingPkmn::CAN_TALK_WITH_POKEMON
       # Special move route to go along with some of the dialogue
       case value
       when 6, 7, 8
-        pbMoveRoute($game_player, [PBMoveRoute::WAIT, 25], true)
+        pbMoveRoute($game_player, [PBMoveRoute::WAIT, 25])
         FollowingPkmn.move_route([
           PBMoveRoute::JUMP, 0, 0,
           PBMoveRoute::WAIT, 10,
@@ -165,7 +165,7 @@ if FollowingPkmn::CAN_TALK_WITH_POKEMON
   EventHandlers.add(:following_pkmn_talk, :ellipses_generic, proc { |pkmn, random_val|
     if random_val == 2
       FollowingPkmn.animation(FollowingPkmn::ANIMATION_EMOTE_ELIPSES)
-      pbMoveRoute($game_player, [PBMoveRoute::WAIT, 20], true)
+      pbMoveRoute($game_player, [PBMoveRoute::WAIT, 20])
       messages = [
         _INTL("{1} mira hacia abajo fijamente."),
         _INTL("{1} está olfateando el aire."),
@@ -205,7 +205,7 @@ if FollowingPkmn::CAN_TALK_WITH_POKEMON
       # Special move route to go along with some of the dialogue
       case value
       when 1, 5, 7, 20, 21
-        pbMoveRoute($game_player, [PBMoveRoute::WAIT, 35], true)
+        pbMoveRoute($game_player, [PBMoveRoute::WAIT, 35])
         FollowingPkmn.move_route([
           PBMoveRoute::TURN_RIGHT,
           PBMoveRoute::WAIT, 10,
@@ -226,7 +226,7 @@ if FollowingPkmn::CAN_TALK_WITH_POKEMON
   EventHandlers.add(:following_pkmn_talk, :happy_generic, proc { |pkmn, random_val|
     if random_val == 3
       FollowingPkmn.animation(FollowingPkmn::ANIMATION_EMOTE_HAPPY)
-      pbMoveRoute($game_player, [PBMoveRoute::WAIT, 20], true)
+      pbMoveRoute($game_player, [PBMoveRoute::WAIT, 20])
       messages = [
         _INTL("{1} comenzó a dar toquecitos a {2}."),
         _INTL("{1} está muy emocionado."),
@@ -261,7 +261,7 @@ if FollowingPkmn::CAN_TALK_WITH_POKEMON
       # Special move route to go along with some of the dialogue
       case value
       when 3
-        pbMoveRoute($game_player, [PBMoveRoute::WAIT, 45], true)
+        pbMoveRoute($game_player, [PBMoveRoute::WAIT, 45])
         FollowingPkmn.move_route([
           PBMoveRoute::TURN_RIGHT,
           PBMoveRoute::WAIT, 4,
@@ -276,7 +276,7 @@ if FollowingPkmn::CAN_TALK_WITH_POKEMON
           PBMoveRoute::JUMP, 0, 0
         ])
       when 11, 16, 17, 24
-        pbMoveRoute($game_player, [PBMoveRoute::WAIT, 40], true)
+        pbMoveRoute($game_player, [PBMoveRoute::WAIT, 40])
         FollowingPkmn.move_route([
           PBMoveRoute::JUMP, 0, 0,
           PBMoveRoute::WAIT, 10,
@@ -295,7 +295,7 @@ if FollowingPkmn::CAN_TALK_WITH_POKEMON
   EventHandlers.add(:following_pkmn_talk, :heart_generic, proc { |pkmn, random_val|
     if random_val == 4
       FollowingPkmn.animation(FollowingPkmn::ANIMATION_EMOTE_HEART)
-      pbMoveRoute($game_player, [PBMoveRoute::WAIT, 20], true)
+      pbMoveRoute($game_player, [PBMoveRoute::WAIT, 20])
       messages = [
         _INTL("{1} ha comenzado a caminar más cerca de {2}."),
         _INTL("¡Aaah! {1} de repente abrazó a {2}."),
@@ -323,7 +323,7 @@ if FollowingPkmn::CAN_TALK_WITH_POKEMON
       value = rand(messages.length)
       case value
       when 1, 6,
-        pbMoveRoute($game_player, [PBMoveRoute::WAIT, 10], true)
+        pbMoveRoute($game_player, [PBMoveRoute::WAIT, 10])
         FollowingPkmn.move_route([
           PBMoveRoute::JUMP, 0, 0
         ])
@@ -367,7 +367,7 @@ if FollowingPkmn::CAN_TALK_WITH_POKEMON
       # Special move route to go along with some of the dialogue
       case value
       when 0
-        pbMoveRoute($game_player, [PBMoveRoute::WAIT, 15], true)
+        pbMoveRoute($game_player, [PBMoveRoute::WAIT, 15])
         FollowingPkmn.move_route([
           PBMoveRoute::TURN_RIGHT,
           PBMoveRoute::WAIT, 4,
@@ -378,7 +378,7 @@ if FollowingPkmn::CAN_TALK_WITH_POKEMON
           PBMoveRoute::TURN_DOWN
         ])
       when 2, 4
-        pbMoveRoute($game_player, [PBMoveRoute::WAIT, 35], true)
+        pbMoveRoute($game_player, [PBMoveRoute::WAIT, 35])
         FollowingPkmn.move_route([
           PBMoveRoute::TURN_RIGHT,
           PBMoveRoute::WAIT, 10,
@@ -389,7 +389,7 @@ if FollowingPkmn::CAN_TALK_WITH_POKEMON
           PBMoveRoute::TURN_DOWN
         ])
       when 14
-        pbMoveRoute($game_player, [PBMoveRoute::WAIT, 50], true)
+        pbMoveRoute($game_player, [PBMoveRoute::WAIT, 50])
         FollowingPkmn.move_route([
           PBMoveRoute::TURN_RIGHT,
           PBMoveRoute::WAIT, 4,
@@ -416,7 +416,7 @@ if FollowingPkmn::CAN_TALK_WITH_POKEMON
           PBMoveRoute::TURN_DOWN
         ])
       when 22, 23
-        pbMoveRoute($game_player, [PBMoveRoute::WAIT, 10], true)
+        pbMoveRoute($game_player, [PBMoveRoute::WAIT, 10])
         FollowingPkmn.move_route([
           PBMoveRoute::JUMP, 0, 0
         ])
