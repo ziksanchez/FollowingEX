@@ -40,7 +40,7 @@ module FollowingPkmn
 
     # Check if follower should be active (without hidden check)
     if @@can_refresh && $PokemonGlobal.follower_toggled
-      self.refresh(true)
+      self.refresh(false)
     end
   end
 end

@@ -129,7 +129,7 @@ module FollowingPkmn
       anim_id   = nil
       anim_id   = FollowingPkmn.const_get(anim_name) if FollowingPkmn.const_defined?(anim_name)
       if event && anim_id
-        $scene.spriteset.addUserAnimation(anim_id, event.x, event.y, false, 1)
+        $scene&.spriteset&.addUserAnimation(anim_id, event.x, event.y, false, 1)
         # pbMoveRoute($game_player, [PBMoveRoute::WAIT, 2])
         # pbWait(Graphics.frame_rate/300)
       end
