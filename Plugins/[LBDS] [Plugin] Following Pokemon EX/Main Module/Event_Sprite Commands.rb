@@ -62,12 +62,14 @@ module FollowingPkmn
     folder = shiny ? "Swimming Shiny" : "Swimming"
     ret = GameData::Species.check_graphic_file("Graphics/Characters/", pkmn.species, pkmn.form,
                                                pkmn.gender, shiny, pkmn.shadow, folder)
+    echoln "  Swimming sprite check for #{pkmn.name}: #{ret}"
     return true if !nil_or_empty?(ret)
     
     # Check for levitate sprite (for airborne Pokemon over water)
     folder = shiny ? "Levitates Shiny" : "Levitates"
     ret = GameData::Species.check_graphic_file("Graphics/Characters/", pkmn.species, pkmn.form,
                                                pkmn.gender, shiny, pkmn.shadow, folder)
+    echoln "  Levitate sprite check for #{pkmn.name}: #{ret}"
     return !nil_or_empty?(ret)
   end
   #-----------------------------------------------------------------------------
@@ -78,17 +80,19 @@ module FollowingPkmn
     pkmn = FollowingPkmn.get_pokemon
     return false if !pkmn
     
+    # Check exceptions list before checking airborne
+    return false if FollowingPkmn::SURFING_FOLLOWERS_EXCEPTIONS.any? do |s|
+      s == pkmn.species || s.to_s == pkmn.species_data.id
+    end
+    
     # Always follow if Pokemon is water type
     return true if pkmn.hasType?(:WATER)
     
-    # Always follow if the Pokemon has a swimming or levitate sprite available
-    # This takes priority over the exceptions list
-    return true if FollowingPkmn.has_swimming_sprite?
-    
-    # Check exceptions list before checking airborne
-    return false if FollowingPkmn::SURFING_FOLLOWERS_EXCEPTIONS.any? do |s|
-      s == pkmn.species || s.to_s == "#{pkmn.species}_#{pkmn.form}"
-    end
+    # # Always follow if the Pokemon has a swimming or levitate sprite available
+    # # This takes priority over the exceptions list
+    # El pokemon debe seguirte en el agua solo si es tipo agua y no está excluido
+    # Esta logica deberia ser solo para si debe usar un sprite especial o no
+    # return true if FollowingPkmn.has_swimming_sprite?
     
     # Follow if the Pokemon flies or levitates (and not in exceptions)
     return true if FollowingPkmn.airborne_follower?
@@ -101,7 +105,7 @@ module FollowingPkmn
   def self.should_use_swimming_sprites?
     return false if !FollowingPkmn.can_check? || !FollowingPkmn.active?
     # Use swimming sprites only when player is actually surfing AND the follower is on water
-    return false if !$PokemonGlobal.surfing || !FollowingPkmn.waterborne_follower?
+    return false if !$PokemonGlobal.surfing || !FollowingPkmn.waterborne_follower? || !FollowingPkmn.has_swimming_sprite?
     
     # Check if the follower is actually on a water tile
     event = FollowingPkmn.get_event

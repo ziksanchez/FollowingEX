@@ -28,7 +28,7 @@ EventHandlers.add(:following_pkmn_appear, :height, proc { |pkmn|
 EventHandlers.add(:following_pkmn_appear, :map_flag_remove, proc { |pkmn|
   metadata = $game_map.metadata
   # Don't follow if map has the approriate flag to show
-  next true if metadata && metadata.has_flag?("HideFollowingPkmn")
+  next false if metadata && metadata.has_flag?("HideFollowingPkmn")
 })
 #-------------------------------------------------------------------------------
 EventHandlers.add(:following_pkmn_appear, :surfing, proc { |pkmn|
@@ -41,7 +41,7 @@ EventHandlers.add(:following_pkmn_appear, :surfing, proc { |pkmn|
       # If we have more than 1 able Pokemon, hide the surfing one
       next false if able_count > 1
       # If it's the only Pokemon, let it follow with swimming sprite
-      next true if able_count == 1
+      next true if able_count == 1 && FollowingPkmn.waterborne_follower?
     end
     # Follow if the Pokemon is water type, levitates or is manually removed
     next true if FollowingPkmn.waterborne_follower?

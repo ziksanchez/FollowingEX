@@ -62,16 +62,20 @@ end
 #-------------------------------------------------------------------------------
 alias __followingpkmn__pbEndSurf pbEndSurf unless defined?(__followingpkmn__pbEndSurf)
 def pbEndSurf(*args)
-  surf_anim_1 = FollowingPkmn.active?
+  old_toggled = $PokemonGlobal.follower_toggled
   ret = __followingpkmn__pbEndSurf(*args)
   return false if !ret
-  
+
   # Let Following Pokemon use its normal follow logic when player exits water
   $PokemonGlobal.current_surfing = nil
-  FollowingPkmn.refresh_internal
-  surf_anim_2 = FollowingPkmn.active?
-  $PokemonGlobal.call_refresh = [true, (surf_anim_1 != surf_anim_2), 1]
+  $PokemonGlobal.surfing = false
   
+  # Unlock and restore the toggle state BEFORE refresh
+  $PokemonGlobal.follower_toggle_locked = false
+  $PokemonGlobal.follower_toggled = old_toggled
+  
+  FollowingPkmn.refresh_internal
+
   # Simply move the follower one step in the player's direction
   if FollowingPkmn.active?
     event = FollowingPkmn.get_event
@@ -90,11 +94,12 @@ def pbEndSurf(*args)
       end
     end
   end
-  
+
   # Fix surf animation immediately by recalculating bush depth
   FollowingPkmn.get_event&.calculate_bush_depth
-  # Refresh sprite to use normal sprites after surfing
-  FollowingPkmn.refresh(false) if FollowingPkmn.active?
+  should_animate = !FollowingPkmn.active?
+  FollowingPkmn.toggle_on(should_animate)
+  FollowingPkmn.refresh(should_animate)
   return ret
 end
 
