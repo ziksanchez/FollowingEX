@@ -210,39 +210,70 @@ module BattleCreationHelperMethods
   def self.after_battle(*args)
     __followingpkmn__after_battle(*args)
     
-    # Lógica de posicionamiento post-batalla
     if FollowingPkmn.can_check? && FollowingPkmn.get_event
       event = FollowingPkmn.get_event
       player = $game_player
       map = $game_map
-      
-      # Calcular coordenadas en frente del jugador
       d = player.direction
-      front_x = player.x + (d == 6 ? 1 : d == 4 ? -1 : 0)
-      front_y = player.y + (d == 2 ? 1 : d == 8 ? -1 : 0)
       
-      # Fallback para casillas transitables
-      if map.valid?(front_x, front_y) && map.passable?(front_x, front_y, 0, event)
-        # Hay espacio enfrente
-        event.moveto(front_x, front_y)
-        event.direction = player.direction 
-      else
-        # No hay espacio enfrente)
-        # El Pokémon toma la posición del jugador
-        old_player_x = player.x
-        old_player_y = player.y
-        
-        # Calcular coordenadas detrás del jugador para moverlo
-        back_x = player.x - (d == 6 ? 1 : d == 4 ? -1 : 0)
-        back_y = player.y - (d == 2 ? 1 : d == 8 ? -1 : 0)
+      # Coordenadas Front and Back
+      fx = player.x + (d == 6 ? 1 : d == 4 ? -1 : 0)
+      fy = player.y + (d == 2 ? 1 : d == 8 ? -1 : 0)
+      bx = player.x - (d == 6 ? 1 : d == 4 ? -1 : 0)
+      by = player.y - (d == 2 ? 1 : d == 8 ? -1 : 0)
+      
+      # Helper para verificar si una casilla está libre
+      tile_free = proc { |x, y|
+        blocked = map.events.values.any? { |e| e.at_coordinate?(x, y) && !e.through && e != event }
+        map.valid?(x, y) && map.passable?(x, y, 0, event) && !blocked
+      }
+      
+      # Helper para aplicar el movimiento
+      move_and_snap = proc { |char, x, y, dir|
+        char.moveto(x, y)
+        char.direction = dir
+        char.straighten
+        char.update
+      }
 
-        if map.valid?(back_x, back_y) && map.passable?(player.x, player.y, 10 - d, player)
-          player.moveto(back_x, back_y)
+      # 1er INTENTO: FRENTE
+      if tile_free.call(fx, fy)
+        move_and_snap.call(event, fx, fy, d)
+      
+      # 2do INTENTO: ATRÁS
+      elsif player.passable?(player.x, player.y, 10 - d)
+        old_x, old_y = player.x, player.y
+        move_and_snap.call(player, bx, by, d) # Movemos al jugador
+        move_and_snap.call(event, old_x, old_y, d) # Movemos al Pokémon
+        
+      # 3er INTENTO: LADOS
+      else
+        side_coords = []
+        if [2, 8].include?(d)
+          side_coords << [player.x - 1, player.y]
+          side_coords << [player.x + 1, player.y]
+        else
+          side_coords << [player.x, player.y - 1]
+          side_coords << [player.x, player.y + 1]
         end
         
-        event.moveto(old_player_x, old_player_y)
-        pbTurnTowardEvent(event, player)
+        moved_to_side = false
+        side_coords.each do |sx, sy|
+          if tile_free.call(sx, sy)
+            move_and_snap.call(event, sx, sy, d)
+            moved_to_side = true
+            break
+          end
+        end
+        
+        # 4to INTENTO: FALLBACK
+        unless moved_to_side
+          move_and_snap.call(event, player.x, player.y, d)
+        end
       end
+
+      event.instance_variable_set(:@last_leader_x, player.x)
+      event.instance_variable_set(:@last_leader_y, player.y)
     end
     
     FollowingPkmn.refresh(false)
@@ -356,6 +387,28 @@ class Interpreter
     end
   end
   #-----------------------------------------------------------------------------
+end
+
+#-------------------------------------------------------------------------------
+# Actualizar el orden del equipo al terminar la batalla
+# Si cambiaste de Pokémon, el que terminó peleando pasará a ser el primero
+#-------------------------------------------------------------------------------
+class Battle
+  alias __followingpkmn__pbEndOfBattle pbEndOfBattle unless method_defined?(:__followingpkmn__pbEndOfBattle)
+  
+  def pbEndOfBattle
+    decision = @decision
+    if [1, 2, 3, 4, 5].include?(decision) && @battlers[0] && !@battlers[0].fainted?
+      new_lead_index = @battlers[0].pokemonIndex
+      if new_lead_index && new_lead_index > 0 && new_lead_index < $player.party.length
+        # Intercambiamos el líder actual (0) con el Pokémon que terminó la batalla
+        $player.party[0], $player.party[new_lead_index] = $player.party[new_lead_index], $player.party[0]
+      end
+    end
+    
+    # Ejecutamos el código original
+    __followingpkmn__pbEndOfBattle
+  end
 end
 
 # Reset the queued pokecenter refresh if nothing changed
